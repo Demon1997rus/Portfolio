@@ -1,6 +1,8 @@
 #ifndef LIST_H
 #define LIST_H
 
+#include <cassert>
+
 namespace Containers
 {
 template <class T>
@@ -58,12 +60,21 @@ public:
         head = tail = nullptr;
     }
 
-    List(int count, const T& value) : List()
+    List(int size) : List(size, T())
     {
-        for (int i = 0; i < count; ++i)
+    }
+
+    List(int size, const T& value) : List()
+    {
+        for (int i = 0; i < size; ++i)
         {
             push_back(value);
         }
+    }
+
+    ~List()
+    {
+        clear();
     }
 
     int count() const
@@ -114,11 +125,13 @@ public:
 
     T& operator[](int index)
     {
+        assert(index >= 0 && index < size && "List<T>::operator[]" && "index out of range");
         return findNode(index)->data;
     }
 
     T at(int index) const
     {
+        assert(index >= 0 && index < size && "List<T>::at" && "index out of range");
         return findNode(index)->data;
     }
 
@@ -186,6 +199,28 @@ public:
     bool empty() const
     {
         return size == 0;
+    }
+
+    void removeAt(int index)
+    {
+        assert(index >= 0 && index < size && "List<T>::removeAt" && "index out of range");
+        if (index == 0)
+        {
+            pop_front();
+        }
+        else if (index + 1 == size)
+        {
+            pop_back();
+        }
+        else
+        {
+            Node* candidate = findNode(index);
+            candidate->prev->next = candidate->next;
+            candidate->next->prev = candidate->prev;
+            delete candidate;
+            candidate = nullptr;
+            --size;
+        }
     }
 };
 
