@@ -1,7 +1,10 @@
 #ifndef LIST_H
 #define LIST_H
 
+#include <iostream>
 #include <cassert>
+
+using namespace std;
 
 namespace Containers
 {
@@ -12,12 +15,8 @@ private:
     class Node
     {
     public:
-        Node(T data = T(), Node* next = nullptr, Node* prev = nullptr)
-        {
-            this->data = data;
-            this->next = next;
-            this->prev = prev;
-        }
+        Node(const T& d, Node* n = nullptr, Node* p = nullptr) : data(d), next(n), prev(p) {}
+        Node(T&& d = T(), Node* n = nullptr, Node* p = nullptr) : data(std::move(d)), next(n), prev(p) {}
         T data;
         Node* next;
         Node* prev;
@@ -32,70 +31,41 @@ private:
         int currentIndex;
         if (size / 2 > index)
         {
-            for (current = head, currentIndex = 0; current; current = current->next, ++currentIndex)
+            current = head;
+            currentIndex = 0;
+            while (current)
             {
                 if (index == currentIndex)
                 {
                     return current;
                 }
+                current = current->next;
+                ++currentIndex;
             }
         }
         else
         {
-            for (current = tail, currentIndex = size - 1; current; current = current->prev, --currentIndex)
+            current = tail;
+            currentIndex = size - 1;
+            while (current)
             {
                 if (index == currentIndex)
                 {
                     return current;
                 }
+                current = current->prev;
+                --currentIndex;
             }
         }
         return current;
     }
 
 public:
-    List()
-    {
-        size = 0;
-        head = tail = nullptr;
-    }
+    List() : size(0), head(nullptr), tail(nullptr) {}
 
-    List(int size) : List(size, T())
-    {
-    }
+    int count() const { return size; }
 
-    List(int size, const T& value) : List()
-    {
-        for (int i = 0; i < size; ++i)
-        {
-            push_back(value);
-        }
-    }
-
-    ~List()
-    {
-        clear();
-    }
-
-    int count() const
-    {
-        return size;
-    }
-
-    int count(const T& value) const
-    {
-        int count = 0;
-        for (Node* current = head; current; current = current->next)
-        {
-            if (current->data == value)
-            {
-                ++count;
-            }
-        }
-        return count;
-    }
-
-    void push_back(T value)
+    void push_back(const T& value)
     {
         if (size++)
         {
@@ -104,12 +74,26 @@ public:
         }
         else
         {
-            head = new Node(value);
-            tail = head;
+            tail = new Node(value);
+            head = tail;
         }
     }
 
-    void push_front(T value)
+    void push_back(T&& value)
+    {
+        if (size++)
+        {
+            tail->next = new Node(std::move(value), nullptr, tail);
+            tail = tail->next;
+        }
+        else
+        {
+            tail = new Node(std::move(value));
+            head = tail;
+        }
+    }
+
+    void push_front(const T& value)
     {
         if (size++)
         {
@@ -123,107 +107,38 @@ public:
         }
     }
 
-    T& operator[](int index)
+    void push_front(T&& value)
     {
-        assert(index >= 0 && index < size && "List<T>::operator[]" && "index out of range");
-        return findNode(index)->data;
+        if (size++)
+        {
+            head->prev = new Node(std::move(value), head);
+            head = head->prev;
+        }
+        else
+        {
+            head = new Node(std::move(value));
+            tail = head;
+        }
     }
 
-    T at(int index) const
+    const T& at(const int& index) const
     {
         assert(index >= 0 && index < size && "List<T>::at" && "index out of range");
         return findNode(index)->data;
     }
 
-    void pop_front()
+    T& operator[](const int& index)
     {
-        if (!head)
-            return;
-        Node* temp = head;
-        head = head->next;
-        delete temp;
-        temp = nullptr;
-        --size;
+        assert(index >= 0 && index < size && "List<T>::operator[]" && "index out of range");
+        return findNode(index)->data;
     }
 
-    void pop_back()
+    const T& operator[](const int& index) const
     {
-        if (!tail)
-            return;
-        Node* temp = tail;
-        tail = tail->prev;
-        delete temp;
-        temp = nullptr;
-        --size;
-    }
-
-    void clear()
-    {
-        while (size)
-            pop_front();
-    }
-
-    void insert(int index, const T& value)
-    {
-        if (index <= 0)
-        {
-            push_front(value);
-        }
-        else if (index >= size)
-        {
-            push_back(value);
-        }
-        else
-        {
-            Node* current = findNode(index);
-            Node* prev = current->prev;
-            Node* node = new Node(value, current, prev);
-            current->prev = node;
-            prev->next = node;
-            ++size;
-        }
-    }
-
-    bool contains(const T& value) const
-    {
-        for (Node* current = head; current; current = current->next)
-        {
-            if (current->data == value)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    bool empty() const
-    {
-        return size == 0;
-    }
-
-    void removeAt(int index)
-    {
-        assert(index >= 0 && index < size && "List<T>::removeAt" && "index out of range");
-        if (index == 0)
-        {
-            pop_front();
-        }
-        else if (index + 1 == size)
-        {
-            pop_back();
-        }
-        else
-        {
-            Node* candidate = findNode(index);
-            candidate->prev->next = candidate->next;
-            candidate->next->prev = candidate->prev;
-            delete candidate;
-            candidate = nullptr;
-            --size;
-        }
+        assert(index >= 0 && index < size && "List<T>::operator[]" && "index out of range");
+        return findNode(index)->data;
     }
 };
-
 }  // namespace Containers
 
 #endif  // LIST_H
