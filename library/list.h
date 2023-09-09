@@ -63,7 +63,34 @@ private:
 public:
     List() : size(0), head(nullptr), tail(nullptr) {}
 
+    ~List() { clear(); }
+
+    List(const List& other) : List()
+    {
+        for (Node* current = other.head; current; current = current->next)
+        {
+            push_back(current->data);
+        }
+    }
+
+    List(List&& other) : size(other.size), head(other.head), tail(other.tail)
+    {
+        other.size = 0;
+        other.head = nullptr;
+        other.tail = nullptr;
+    }
+
+    List(std::initializer_list<T> args) : List()
+    {
+        for (typename std::initializer_list<T>::const_iterator it = args.begin(); it != args.end(); ++it)
+        {
+            push_back(*it);
+        }
+    }
+
     int count() const { return size; }
+
+    bool empty() const { return size == 0; }
 
     void push_back(const T& value)
     {
@@ -118,6 +145,36 @@ public:
         {
             head = new Node(std::move(value));
             tail = head;
+        }
+    }
+
+    void pop_back()
+    {
+        if (!tail)
+            return;
+        Node* temp = tail;
+        tail = tail->prev;
+        delete temp;
+        temp = nullptr;
+        --size;
+    }
+
+    void pop_front()
+    {
+        if (!head)
+            return;
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+        temp = nullptr;
+        --size;
+    }
+
+    void clear()
+    {
+        while (size)
+        {
+            pop_back();
         }
     }
 
