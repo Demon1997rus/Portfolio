@@ -60,6 +60,32 @@ private:
         return current;
     }
 
+    Node* destruct_node(Node* node)
+    {
+        if (!node)
+            return nullptr;
+
+        Node* next = node->next;
+        Node* prev = node->prev;
+        if (node == head)
+        {
+            pop_front();
+        }
+        else if (node == tail)
+        {
+            pop_back();
+        }
+        else
+        {
+            prev->next = next;
+            next->prev = prev;
+            delete node;
+            node = nullptr;
+            --size;
+        }
+        return next;
+    }
+
 public:
     List() : size(0), head(nullptr), tail(nullptr) {}
 
@@ -106,9 +132,17 @@ public:
         return findNode(index)->data;
     }
 
-    T& back() { return tail->data; }
+    T& back()
+    {
+        assert(!isEmpty() && "List<T>::back" && "the list is empty");
+        return tail->data;
+    }
 
-    const T& back() const { return tail->data; }
+    const T& back() const
+    {
+        assert(!isEmpty() && "List<T>::back" && "the list is empty");
+        return tail->data;
+    }
 
     void clear()
     {
@@ -118,9 +152,17 @@ public:
         }
     }
 
-    const T& constFirst() const { return head->data; }
+    const T& constFirst() const
+    {
+        assert(!isEmpty() && "List<T>::constFirst" && "the list is empty");
+        return head->data;
+    }
 
-    const T& constLast() const { return tail->data; }
+    const T& constLast() const
+    {
+        assert(!isEmpty() && "List<T>::constLast" && "the list is empty");
+        return tail->data;
+    }
 
     bool contains(const T& value) const
     {
@@ -153,13 +195,29 @@ public:
 
     bool endsWith(const T& value) const { return size != 0 && tail->data == value; }
 
-    T& first() { return head->data; }
+    T& first()
+    {
+        assert(!isEmpty() && "List<T>::first" && "the list is empty");
+        return head->data;
+    }
 
-    const T& first() const { return head->data; }
+    const T& first() const
+    {
+        assert(!isEmpty() && "List<T>::first" && "the list is empty");
+        return head->data;
+    }
 
-    T& front() { return head->data; }
+    T& front()
+    {
+        assert(!isEmpty() && "List<T>::front" && "the list is empty");
+        return head->data;
+    }
 
-    const T& front() const { return head->data; }
+    const T& front() const
+    {
+        assert(!isEmpty() && "List<T>::front" && "the list is empty");
+        return head->data;
+    }
 
     int indexOf(const T& value, int from = 0) const
     {
@@ -218,9 +276,17 @@ public:
 
     bool isEmpty() const { return size == 0; }
 
-    T& last() { return tail->data; }
+    T& last()
+    {
+        assert(!isEmpty() && "List<T>::last" && "the list is empty");
+        return tail->data;
+    }
 
-    const T& last() const { return tail->data; }
+    const T& last() const
+    {
+        assert(!isEmpty() && "List<T>::last" && "the list is empty");
+        return tail->data;
+    }
 
     int lastIndexOf(const T& value, int from = -1) const
     {
@@ -279,7 +345,7 @@ public:
 
     void pop_back()
     {
-        assert(!isEmpty() && "the list is empty");
+        assert(!isEmpty() && "List<T>::pop_back" && "the list is empty");
         Node* temp = tail;
         tail = tail->prev;
         delete temp;
@@ -289,7 +355,7 @@ public:
 
     void pop_front()
     {
-        assert(!isEmpty() && "the list is empty");
+        assert(!isEmpty() && "List<T>::pop_front" && "the list is empty");
         Node* temp = head;
         head = head->next;
         delete temp;
@@ -361,36 +427,14 @@ public:
     {
         Node* current = head;
         int count = 0;
-        bool isNoStep;
         while (current)
         {
-            isNoStep = true;
             if (current->data == value)
             {
-                if (current == head)
-                {
-                    current = current->next;
-                    pop_front();
-                }
-                else if (current == tail)
-                {
-                    current = current->next;
-                    pop_back();
-                }
-                else
-                {
-                    current->prev->next = current->next;
-                    current->next->prev = current->prev;
-                    Node* temp = current;
-                    current = current->next;
-                    delete temp;
-                    temp = nullptr;
-                    --size;
-                }
-                isNoStep = false;
+                current = destruct_node(current);
                 ++count;
             }
-            if (isNoStep)
+            else
             {
                 current = current->next;
             }
@@ -402,24 +446,7 @@ public:
     {
         if (index < 0 || index >= size)
             return;
-
-        Node* current = findNode(index);
-        if (current == head)
-        {
-            pop_front();
-        }
-        else if (current == tail)
-        {
-            pop_back();
-        }
-        else
-        {
-            current->prev->next = current->next;
-            current->next->prev = current->prev;
-            delete current;
-            current = nullptr;
-            --size;
-        }
+        destruct_node(findNode(index));
     }
 
     void removeFirst() { pop_front(); }
@@ -433,25 +460,91 @@ public:
         {
             if (current->data == value)
             {
-                if (current == head)
-                {
-                    pop_front();
-                }
-                else if (current == tail)
-                {
-                    pop_back();
-                }
-                else
-                {
-                    current->prev->next = current->next;
-                    current->next->prev = current->prev;
-                    delete current;
-                    current = nullptr;
-                    --size;
-                }
+                destruct_node(current);
                 return true;
             }
             current = current->next;
+        }
+        return false;
+    }
+
+    void replace(const int& index, const T& value)
+    {
+        assert(index >= 0 && index < size && "List<T>::replace" && "index out of range");
+        findNode(index)->data = value;
+    }
+
+    void replace(const int& index, T&& value)
+    {
+        assert(index >= 0 && index < size && "List<T>::replace" && "index out of range");
+        findNode(index)->data = std::move(value);
+    }
+
+    bool startsWith(const T& value) const { return size != 0 && head->data == value; }
+
+    void swap(List<T>& other)
+    {
+        std::swap(head, other.head);
+        std::swap(tail, other.tail);
+        std::swap(size, other.size);
+    }
+
+    void swap(const int& i, const int& j)
+    {
+        assert(i >= 0 && i < size && j >= 0 && j < size && "List<T>::swap" && "index out of range");
+        std::swap(findNode(i)->data, findNode(j)->data);
+    }
+
+    T takeAt(const int& index)
+    {
+        assert(index >= 0 && index < size && "List<T>::takeAt" && "index out of range");
+        Node* node = findNode(index);
+        T temp = std::move(node->data);
+        destruct_node(node);
+        return temp;
+    }
+
+    T takeFirst()
+    {
+        T temp = std::move(first());
+        pop_front();
+        return temp;
+    }
+
+    T takeLast()
+    {
+        T temp = std::move(last());
+        pop_back();
+        return temp;
+    }
+
+    T value(const int& index) const
+    {
+        Node* node = findNode(index);
+        if (node)
+            return node->data;
+        return T();
+    }
+
+    T value(const int& index, const T& defaultValue) const
+    {
+        Node* node = findNode(index);
+        if (node)
+            return node->data;
+        return defaultValue;
+    }
+
+    bool operator!=(const List<T> other) const
+    {
+        if (size != other.size)
+            return true;
+
+        for (Node *temp1 = head, *temp2 = other.head; temp1 && temp2; temp1 = temp1->next, temp2 = temp2->next)
+        {
+            if (temp1->data != temp2->data)
+            {
+                return true;
+            }
         }
         return false;
     }

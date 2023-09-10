@@ -19,10 +19,18 @@ int main()
 {
     auto start = chrono::steady_clock::now();
     // testSpeed containers
-    List<int> lst{ 1, 2, 3, 4, 5, 6 };
-    cout << lst.removeOne(6) << endl;
-    print(lst);
-    cout << "size list-----> " << lst.count() << endl;
+    List<int> lst{ 0, 1, 2, 3, 4, 5 };
+    List<int> lst1{ 1, 2, 3, 4, 5 };
+    if (lst != lst1)
+    {
+        cout << "true" << endl;
+    }
+    else
+    {
+        cout << "false" << endl;
+    }
+    //    print(lst);
+    //    cout << "size list-----> " << lst.count() << endl;
     auto finish = chrono::steady_clock::now();
     auto duration = finish - start;
     auto total = chrono::duration_cast<chrono::milliseconds>(duration).count();
