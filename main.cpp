@@ -10,15 +10,18 @@ void print(const List<int>& container)
 {
     for (int i = 0; i < container.count(); ++i)
     {
-        cout << container.at(i) << endl;
+        cout << container.at(i) << " ";
     }
+    cout << endl;
 }
 
 int main()
 {
     auto start = chrono::steady_clock::now();
     // testSpeed containers
-    List<int> lst;
+    List<int> lst{ 1, 2, 3, 4, 5, 6 };
+    cout << lst.removeOne(6) << endl;
+    print(lst);
     cout << "size list-----> " << lst.count() << endl;
     auto finish = chrono::steady_clock::now();
     auto duration = finish - start;
