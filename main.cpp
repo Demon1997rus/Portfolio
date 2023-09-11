@@ -2,6 +2,7 @@
 #include <chrono>
 
 #include "library/list.h"
+#include <list>
 
 using namespace std;
 using namespace Containers;
@@ -19,18 +20,9 @@ int main()
 {
     auto start = chrono::steady_clock::now();
     // testSpeed containers
-    List<int> lst{ 0, 1, 2, 3, 4, 5 };
-    List<int> lst1{ 1, 2, 3, 4, 5 };
-    if (lst != lst1)
-    {
-        cout << "true" << endl;
-    }
-    else
-    {
-        cout << "false" << endl;
-    }
-    //    print(lst);
-    //    cout << "size list-----> " << lst.count() << endl;
+    Containers::List<string> myList;
+    std::list<string> stdList;
+    // MyList vs StdList
     auto finish = chrono::steady_clock::now();
     auto duration = finish - start;
     auto total = chrono::duration_cast<chrono::milliseconds>(duration).count();

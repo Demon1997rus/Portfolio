@@ -534,23 +534,6 @@ public:
         return defaultValue;
     }
 
-    bool operator!=(const List<T> other) const
-    {
-        if (size != other.size)
-            return true;
-
-        for (Node *temp1 = head, *temp2 = other.head; temp1 && temp2; temp1 = temp1->next, temp2 = temp2->next)
-        {
-            if (temp1->data != temp2->data)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //==================================
-
     T& operator[](const int& index)
     {
         assert(index >= 0 && index < size && "List<T>::operator[]" && "index out of range");
