@@ -1,5 +1,4 @@
-#ifndef LIST_H
-#define LIST_H
+#pragma once
 
 #include <iostream>
 #include <cassert>
@@ -547,5 +546,3 @@ public:
     }
 };
 }  // namespace Containers
-
-#endif  // LIST_H
