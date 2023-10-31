@@ -7,4 +7,7 @@ SOURCES += main.cpp
 
 HEADERS += \
     library/list.h \
-    library/vector.h
+    library/vector.h \
+    library/uniqueptr.h
+
+INCLUDEPATH = /home/user/boost/include
