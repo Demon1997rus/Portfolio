@@ -15,19 +15,40 @@ class Vector
 {
     typedef T value_type;
     typedef std::size_t size_type;
+    typedef value_type* iterator;
+    typedef const value_type* const_iterator;
+    typedef value_type& reference;
+    typedef value_type* pointer;
 
 public:
     Vector() : m_used(0), m_capacity(0), m_data(nullptr) {}
 
-    Vector(size_type size) : Vector(size, T()) {}
+    Vector(size_type size) : m_used(size), m_capacity(size)
+    {
+        m_data = m_allocator.allocate(size);
+        for (size_type i = 0; i < size; ++i)
+        {
+            m_allocator.construct(m_data + i);
+        }
+    }
 
-    Vector(size_type size, const T& value)
-      : m_used(size), m_capacity(size * 2 + 1), m_data(m_allocator.allocate(m_capacity))
+    Vector(size_type size, const T& value) : m_used(size), m_capacity(size)
+    {
+        m_data = m_allocator.allocate(size);
+        for (size_type i = 0; i < size; ++i)
+        {
+            m_allocator.construct(m_data + i);
+            m_data[i] = value;
+        }
+    }
+
+    ~Vector()
     {
         for (size_type i = 0; i < m_used; ++i)
         {
-            m_allocator.construct(m_data + i, value);
+            m_allocator.destroy(m_data + i);
         }
+        m_allocator.deallocate(m_data, m_capacity);
     }
 
     friend std::ostream& operator<<(std::ostream& os, const Vector<T>& other)
