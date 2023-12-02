@@ -13,4 +13,6 @@ void print(const Container& container)
     }
 }
 
+std::string searchConfig(const std::string& name);
+
 }  // namespace rdi

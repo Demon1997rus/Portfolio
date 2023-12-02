@@ -1,8 +1,8 @@
-#include "xmlhelper.h"
+#include "xmlparserexample.h"
 
 namespace rdi
 {
-void XmlHelper::load(const std::string& filename)
+void XmlExample::load(const std::string& filename)
 {
     // Создаём пустой объект дерева свойств
     pt::ptree tree;
@@ -28,7 +28,7 @@ void XmlHelper::load(const std::string& filename)
     }
 }
 
-void XmlHelper::save(const std::string& filename)
+void XmlExample::save(const std::string& filename)
 {
     // Создаём пустой объект дерева свойств
     pt::ptree tree;

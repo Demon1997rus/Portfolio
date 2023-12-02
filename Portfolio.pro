@@ -6,7 +6,8 @@ CONFIG -= qt
 SOURCES += main.cpp \
     library/functions.cpp \
     library/nonbinarypolishrecord.cpp \
-    library/xmlhelper.cpp
+    library/xmlparserexample.cpp \
+    library/xmlparsetests.cpp
 
 HEADERS += \
     library/list.h \
@@ -15,6 +16,7 @@ HEADERS += \
     library/array.h \
     library/functions.h \
     library/nonbinarypolishrecord.h \
-    library/xmlhelper.h
+    library/xmlparserexample.h \
+    library/xmlparsetests.h
 
 INCLUDEPATH = /home/user/boost/include

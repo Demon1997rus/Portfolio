@@ -12,7 +12,7 @@ namespace pt = boost::property_tree;
 
 namespace rdi
 {
-class XmlHelper
+class XmlExample
 {
 public:
     std::string m_file;               // имя файла журнала
